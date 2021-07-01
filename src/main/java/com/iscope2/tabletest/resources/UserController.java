@@ -1,6 +1,5 @@
 package com.iscope2.tabletest.resources;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
@@ -18,37 +17,42 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
-	
+
 	private TestUserService testUserService;
-	
+
 	public UserController(TestUserService testUserService) {
 		super();
 		this.testUserService = testUserService;
 	}
-	
+
 	@GetMapping("/users/{id}")
 	public TestUser getUserById(@PathVariable Long id) {
 		return testUserService.findById(id);
 	}
-	
+
 	@GetMapping("/users")
 	public TestUserDTO getAllUsersPaginationSort(@RequestParam Optional<Integer> page, @RequestParam Optional<Integer> per_page,
-			@RequestParam(defaultValue = "id") String order, @RequestParam(defaultValue = "ASC") String orderby) {
+			@RequestParam(defaultValue = "ASC") String order, @RequestParam(defaultValue = "id") String orderby, @RequestParam Optional<String> search) {
 		
-		Direction direction = (orderby.equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
-		Pageable pageable;
+		Pageable pageable = generatePageable(page, per_page, order, orderby);
+		TestUserDTO testUserDTO;
 		
-		if (page.isPresent() && per_page.isPresent()) {
-			//System.out.println(order + " " + direction.toString());
-			pageable = PageRequest.of(page.get(), per_page.get(), Sort.by(direction, order));
+		if (search.isPresent()) {
+			testUserDTO = testUserService.findWherePagination(search.get(), pageable);
 		} else {
-			List<TestUser> list = testUserService.findAll();
-			return new TestUserDTO(list, list.size(), 1);
+			testUserDTO = testUserService.findAllPagination(pageable);
 		}
-		
-		return testUserService.findAllPagination(pageable);
+			
+		return testUserDTO;
 	}
-	
+
+//	@GetMapping("/users")
+//	public TestUserDTO getAllUsersPaginationSort(@RequestParam(defaultValue = "1") String page, @RequestParam(defaultValue = "10") String per_page, 
+//			@RequestParam(defaultValue = "id") String order, @RequestParam(defaultValue = "ASC") String orderby) {
+//		Pageable pageable = generatePageableDefault(page, per_page, order, orderby);
+//		return testUserService.findAllPagination(pageable);
+//	}
+
 	@PutMapping("/users/{id}")
 	public TestUser ediTestUser(@RequestBody TestUser testUser, @PathVariable Long id) {
 		TestUser oldTestUser = testUserService.findById(id);
@@ -59,21 +63,38 @@ public class UserController {
 		oldTestUser.setPhone(testUser.getPhone());
 		return testUserService.save(oldTestUser);
 	}
-	
+
 	@PostMapping("/users")
 	public TestUser createTestUser(@RequestBody TestUser testUser) {
 		return testUserService.save(testUser);
 	}
-	
+
 	@DeleteMapping("/users/{id}")
 	public void deleteUserById(@PathVariable Long id) {
 		testUserService.deleteById(id);
 	}
-	
+
 	@DeleteMapping("/users")
 	public void deleteUser(@RequestBody TestUser testUser) {
 		testUserService.delete(testUser);
 	}
-	
-}
 
+	private Pageable generatePageable(Optional<Integer> page, Optional<Integer> per_page, String order, String order_by) {
+		Direction direction = (order.equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
+		Pageable pageable = null;
+
+		if (page.isPresent() && per_page.isPresent()) {
+			pageable = PageRequest.of(page.get(), per_page.get(), Sort.by(direction, order_by));
+		} else {
+			pageable = Pageable.unpaged();
+		}
+		return pageable;
+	}
+	
+	private Pageable generatePageableDefault(String page, String per_page, String order, String orderby) {
+		Direction direction = (orderby.equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
+		Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(per_page), Sort.by(direction, order));	
+		return pageable;
+	}
+
+}

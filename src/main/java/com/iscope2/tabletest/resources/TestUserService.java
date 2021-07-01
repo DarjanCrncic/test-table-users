@@ -6,4 +6,6 @@ public interface TestUserService extends CrudService<TestUser, Long>{
 
 	TestUserDTO findAllPagination(Pageable pageable);
 
+	TestUserDTO findWherePagination(String search, Pageable pageable);
+
 }

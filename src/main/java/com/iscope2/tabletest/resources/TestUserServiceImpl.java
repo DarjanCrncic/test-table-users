@@ -18,8 +18,13 @@ public class TestUserServiceImpl implements TestUserService{
 	}
 
 	@Override
-	public List<TestUser> findAll() {
-		return testUserRepository.findAll();
+	public TestUserDTO findWherePagination(String search, Pageable pageable) {
+		List<TestUser> userList = new ArrayList<TestUser>();
+		Page<TestUser> page = testUserRepository.findByFirstnameIgnoreCaseContainingOrSurnameIgnoreCaseContaining(search, search, pageable);
+		if (page.hasContent()) {
+			userList = page.getContent();
+		}
+		return new TestUserDTO(userList, Math.toIntExact(page.getTotalElements()), page.getTotalPages());
 	}
 
 	@Override
@@ -50,6 +55,11 @@ public class TestUserServiceImpl implements TestUserService{
 			userList = page.getContent();
 		}
 		return new TestUserDTO(userList, Math.toIntExact(page.getTotalElements()), page.getTotalPages());
+	}
+
+	@Override
+	public List<TestUser> findAll() {
+		return testUserRepository.findAll();
 	}
 
 }
