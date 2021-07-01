@@ -32,9 +32,9 @@ public class UserController {
 
 	@GetMapping("/users")
 	public TestUserDTO getAllUsersPaginationSort(@RequestParam Optional<Integer> page, @RequestParam Optional<Integer> per_page,
-			@RequestParam(defaultValue = "ASC") String order, @RequestParam(defaultValue = "id") String orderby, @RequestParam Optional<String> search) {
+			@RequestParam(defaultValue = "ASC") String order, @RequestParam(defaultValue = "id") String order_by, @RequestParam Optional<String> search) {
 		
-		Pageable pageable = generatePageable(page, per_page, order, orderby);
+		Pageable pageable = generatePageable(page, per_page, order, order_by);
 		TestUserDTO testUserDTO;
 		
 		if (search.isPresent()) {
