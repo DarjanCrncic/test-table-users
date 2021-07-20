@@ -5,17 +5,23 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import com.iscope2.tabletest.models.FilterDTO;
+import com.iscope2.tabletest.models.TestUser;
+import com.iscope2.tabletest.models.TestUserDTO;
+import com.iscope2.tabletest.utils.QueryBuilder;
+
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class TestUserServiceImpl implements TestUserService{
 	
 	private TestUserRepository testUserRepository;
-
-	public TestUserServiceImpl(TestUserRepository testUserRepository) {
-		super();
-		this.testUserRepository = testUserRepository;
-	}
+	private JdbcTemplate jdbcTemplate;
 
 	@Override
 	public TestUserDTO findWherePagination(String search, Pageable pageable) {
@@ -60,6 +66,22 @@ public class TestUserServiceImpl implements TestUserService{
 	@Override
 	public List<TestUser> findAll() {
 		return testUserRepository.findAll();
+	}
+	
+	@Override 
+	public TestUserDTO getAllWithFilters(FilterDTO filterDTO) {
+		int perPage = (filterDTO.getPerPage() == 0) ? 10 : filterDTO.getPerPage();
+		String query = QueryBuilder.generateQuery("test_user", filterDTO);	
+		List<TestUser> usersList = jdbcTemplate.query(query, new BeanPropertyRowMapper<TestUser>(TestUser.class));
+		int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM (" 
+				+ QueryBuilder.genereateQueryWithoutOffset("test_user", filterDTO) + ")", Integer.class);
+
+		TestUserDTO testUserDTO = new TestUserDTO();
+		testUserDTO.setTotal(count);
+		testUserDTO.setPages(count/perPage);
+		testUserDTO.setData(usersList);
+		
+		return testUserDTO;
 	}
 
 }

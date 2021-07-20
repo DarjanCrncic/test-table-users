@@ -5,6 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.iscope2.tabletest.models.TestUser;
+
 @Repository
 public interface TestUserRepository extends JpaRepository<TestUser, Long> {
 
