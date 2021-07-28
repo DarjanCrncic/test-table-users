@@ -1,5 +1,7 @@
 package com.iscope2.tabletest.models;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +24,6 @@ public class TestUser {
 	private String surname;
 	private String email;
 	private String phone;
-	private String birthdate;
+	private Date birthdate;
 	
 }

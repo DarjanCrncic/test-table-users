@@ -5,8 +5,9 @@ import lombok.Data;
 @Data
 public class FilterObject {
 	
-	String search;
-	String lo;
-	String filter;
+	Object value;
+	String logicalOperand;
+	String columnName;
 	String operation;
+	String type;
 }

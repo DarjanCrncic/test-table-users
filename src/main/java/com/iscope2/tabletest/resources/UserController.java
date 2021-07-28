@@ -52,22 +52,6 @@ public class UserController {
 		return testUserService.getAllWithFilters(filterDTO);
 	}
 
-//	@GetMapping("/users")
-//	public TestUserDTO getAllUsersPaginationSort(@RequestParam(defaultValue = "0") String page, @RequestParam(defaultValue = "10") String per_page, 
-//			@RequestParam(defaultValue = "ASC") String order, @RequestParam(defaultValue = "id") String order_by, @RequestParam Optional<String> search) {
-//		
-//		Pageable pageable = generatePageableDefault(page, per_page, order, order_by);
-//		TestUserDTO testUserDTO;
-//	
-//		if (search.isPresent()) {
-//			testUserDTO = testUserService.findWherePagination(search.get(), pageable);
-//		} else {
-//			testUserDTO = testUserService.findAllPagination(pageable);
-//		}
-//		
-//		return testUserDTO;
-//	}
-
 	@PutMapping("/users/{id}")
 	public TestUser ediTestUser(@RequestBody TestUser testUser, @PathVariable Long id) {
 		TestUser oldTestUser = testUserService.findById(id);
