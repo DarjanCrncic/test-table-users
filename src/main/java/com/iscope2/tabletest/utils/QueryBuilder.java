@@ -36,11 +36,11 @@ public class QueryBuilder {
 			}
 			if (type.equals("number") && filter.getValue() instanceof Number) {
 				String search =  filter.getValue().toString();
-				str.append(" ").append(filter.getColumnName()).append(" ").append(filter.getOperation()).append(" ").append(search);
+				str.append(" LOWER(").append(filter.getColumnName()).append(") ").append(filter.getOperation()).append(" ").append(search);
 			}
 			if (type.equals("date") && filter.getValue() instanceof String) {
 				String search = filter.getValue().toString();
-				str.append(" ").append(filter.getColumnName()).append(" ").append(filter.getOperation()).append(" TO_DATE('").append(search).append("', '%RRRR-%mm-%dd') ");
+				str.append(" LOWER(").append(filter.getColumnName()).append(") ").append(filter.getOperation()).append(" TO_DATE('").append(search).append("', 'RRRR-mm-dd UTC') ");
 			}
 		}
 		if (closingBracketCounter > 0) {
