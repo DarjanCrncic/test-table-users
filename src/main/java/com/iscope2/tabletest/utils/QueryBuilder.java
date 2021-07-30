@@ -7,7 +7,6 @@ import com.iscope2.tabletest.models.FilterObject;
 import com.iscope2.tabletest.models.constants.LogicalOperand;
 import com.iscope2.tabletest.models.constants.Operations;
 import com.iscope2.tabletest.models.constants.Types;
-import com.sun.jdi.request.InvalidRequestStateException;
 
 import lombok.NoArgsConstructor;
 
@@ -48,7 +47,7 @@ public class QueryBuilder {
 				str.append(" LOWER(").append(filter.getColumnName()).append(") ").append(Operations.getOperation(filter.getOperation()))
 					.append(" TO_DATE('").append(search).append("', 'RRRR-mm-dd UTC') ");
 			} else {
-				throw new InvalidRequestStateException();
+				throw new RuntimeException();
 			}
 		}
 		if (closingBracketCounter > 0) {
