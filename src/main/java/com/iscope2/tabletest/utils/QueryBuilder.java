@@ -4,6 +4,10 @@ import java.util.List;
 
 import com.iscope2.tabletest.models.FilterDTO;
 import com.iscope2.tabletest.models.FilterObject;
+import com.iscope2.tabletest.models.constants.LogicalOperand;
+import com.iscope2.tabletest.models.constants.Operations;
+import com.iscope2.tabletest.models.constants.Types;
+import com.sun.jdi.request.InvalidRequestStateException;
 
 import lombok.NoArgsConstructor;
 
@@ -20,27 +24,31 @@ public class QueryBuilder {
 		}
 
 		for (FilterObject filter : filters) {
-			String type = filter.getType();
-			String lo = (filter.getLogicalOperand() == null) ? "AND" : filter.getLogicalOperand();
+			int type = filter.getType();
+			String lo = LogicalOperand.getLogicalOperand(filter.getLogicalOperand());
 
-			if (lo.equalsIgnoreCase("OR")) {
+			if (lo.equalsIgnoreCase(LogicalOperand.OR.getText())) {
 				str.append(" ").append(lo).append(" (");
 				closingBracketCounter++;
 			} else {
 				str.append(" ").append(lo);
 			}
 
-			if (type.equals("text") && filter.getValue() instanceof String) {
-				String search = likeAstrixPosition(filter.getValue().toString(), filter.getOperation());
+			if (type == Types.TEXT.getId() && filter.getValue() instanceof String) {
+				String search = Operations.getOperation(filter.getOperation()).replace("_PLACEHOLDER_", filter.getValue().toString().toLowerCase());
 				str.append(" LOWER(").append(filter.getColumnName()).append(") ").append("LIKE '").append(search).append("' ");
 			}
-			if (type.equals("number") && filter.getValue() instanceof Number) {
+			else if (type == Types.NUMBER.getId() && filter.getValue() instanceof Number) {
 				String search =  filter.getValue().toString();
-				str.append(" LOWER(").append(filter.getColumnName()).append(") ").append(filter.getOperation()).append(" ").append(search);
+				str.append(" LOWER(").append(filter.getColumnName()).append(") ").append(Operations.getOperation(filter.getOperation()))
+					.append(" ").append(search);
 			}
-			if (type.equals("date") && filter.getValue() instanceof String) {
+			else if (type == Types.DATE.getId() && filter.getValue() instanceof String) {
 				String search = filter.getValue().toString();
-				str.append(" LOWER(").append(filter.getColumnName()).append(") ").append(filter.getOperation()).append(" TO_DATE('").append(search).append("', 'RRRR-mm-dd UTC') ");
+				str.append(" LOWER(").append(filter.getColumnName()).append(") ").append(Operations.getOperation(filter.getOperation()))
+					.append(" TO_DATE('").append(search).append("', 'RRRR-mm-dd UTC') ");
+			} else {
+				throw new InvalidRequestStateException();
 			}
 		}
 		if (closingBracketCounter > 0) {

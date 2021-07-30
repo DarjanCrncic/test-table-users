@@ -6,8 +6,8 @@ import lombok.Data;
 public class FilterObject {
 	
 	Object value;
-	String logicalOperand;
+	int logicalOperand;
 	String columnName;
-	String operation;
-	String type;
+	int operation;
+	int type;
 }
