@@ -89,7 +89,7 @@ public class QueryBuilder {
 		String orderBy = (filterDTO.getOrderBy() == null) ? "ID" : filterDTO.getOrderBy();
 		String search = (filterDTO.getSearch() == null) ? "" : searchAllQuery.replace("__PLACEHOLDER__", filterDTO.getSearch());
 		
-		if (whereQuery.isEmpty() || whereQuery.isBlank()) {
+		if (whereQuery.isEmpty()) {
 			search = " WHERE " + search;
 		} else {
 			search = " AND " + search;
