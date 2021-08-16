@@ -51,6 +51,11 @@ public class UserController {
 	public TestUserDTO getAllUsersPaginationSortFilter(@RequestBody FilterDTO filterDTO) {
 		return testUserService.getAllWithFilters(filterDTO);
 	}
+	
+	@PostMapping("/users/list")
+	public TestUserDTO getAllUsersPaginationSortFilterList(@RequestBody FilterDTO filterDTO) {
+		return testUserService.getAllWithFilters(filterDTO);
+	}
 
 	@PutMapping("/users/{id}")
 	public TestUser ediTestUser(@RequestBody TestUser testUser, @PathVariable Long id) {

@@ -5,9 +5,9 @@ import java.util.Map;
 
 public enum Types {
 	
-	TEXT(1, "TEXT"),
-    NUMBER(2, "NUMBER"),
-    DATE(3, "DATE");
+	TEXT(1, "text"),
+    NUMBER(2, "number"),
+    DATE(3, "date");
 
     private final Integer id;
     private final String text;

@@ -13,8 +13,9 @@ public class FilterDTO {
 
 	int page;
 	int perPage;
-	String order;
+	int order;
 	String orderBy;
+	String search;
 	
 	List<FilterObject> filters;
 

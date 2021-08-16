@@ -199,4 +199,3 @@ INSERT INTO test_user (id,firstname,surname,email,phone,birthdate) VALUES (197,'
 INSERT INTO test_user (id,firstname,surname,email,phone,birthdate) VALUES (198,'Cullen','Wise','nibh.Phasellus.nulla@euismodenimEtiam.com','06 32 69 45 64',to_date('25.10.20', 'dd.mm.rr'));
 INSERT INTO test_user (id,firstname,surname,email,phone,birthdate) VALUES (199,'Rudyard','Hopper','et.magnis.dis@utpharetra.ca','04 55 19 04 16',to_date('19.08.20', 'dd.mm.rr'));
 INSERT INTO test_user (id,firstname,surname,email,phone,birthdate) VALUES (200,'Jonas','Garner','ac.arcu.Nunc@risusDuis.co.uk','09 91 91 53 84',to_date('14.07.21', 'dd.mm.rr'));
-

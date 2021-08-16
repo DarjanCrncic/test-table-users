@@ -7,7 +7,7 @@ public class FilterObject {
 	
 	Object value;
 	int logicalOperand;
-	String columnName;
+	String field;
 	int operation;
-	int type;
+	String type;
 }

@@ -22,9 +22,10 @@ public class QueryBuilder {
 			str.append(" WHERE ");
 		}
 
-		for (FilterObject filter : filters) {
-			int type = filter.getType();
-			String lo = LogicalOperand.getLogicalOperand(filter.getLogicalOperand());
+		for (int i=0; i<filters.size(); i++) {
+			FilterObject filter = filters.get(i);
+			String type = filter.getType();
+			String lo = i != 0 ? LogicalOperand.getLogicalOperand(filter.getLogicalOperand()) : "";
 
 			if (lo.equalsIgnoreCase(LogicalOperand.OR.getText())) {
 				str.append(" ").append(lo).append(" (");
@@ -33,18 +34,18 @@ public class QueryBuilder {
 				str.append(" ").append(lo);
 			}
 
-			if (type == Types.TEXT.getId() && filter.getValue() instanceof String) {
+			if (type.equals(Types.TEXT.getText()) && filter.getValue() instanceof String) {
 				String search = Operations.getOperation(filter.getOperation()).replace("_PLACEHOLDER_", filter.getValue().toString().toLowerCase());
-				str.append(" LOWER(").append(filter.getColumnName()).append(") ").append("LIKE '").append(search).append("' ");
+				str.append(" LOWER(").append(filter.getField()).append(") ").append("LIKE '").append(search).append("' ");
 			}
-			else if (type == Types.NUMBER.getId() && filter.getValue() instanceof Number) {
+			else if (type.equals(Types.NUMBER.getText()) && filter.getValue() instanceof Number) {
 				String search =  filter.getValue().toString();
-				str.append(" LOWER(").append(filter.getColumnName()).append(") ").append(Operations.getOperation(filter.getOperation()))
+				str.append(" LOWER(").append(filter.getField()).append(") ").append(Operations.getOperation(filter.getOperation()))
 					.append(" ").append(search);
 			}
-			else if (type == Types.DATE.getId() && filter.getValue() instanceof String) {
+			else if (type.equals(Types.DATE.getText()) && filter.getValue() instanceof String) {
 				String search = filter.getValue().toString();
-				str.append(" LOWER(").append(filter.getColumnName()).append(") ").append(Operations.getOperation(filter.getOperation()))
+				str.append(" LOWER(").append(filter.getField()).append(") ").append(Operations.getOperation(filter.getOperation()))
 					.append(" TO_DATE('").append(search).append("', 'RRRR-mm-dd UTC') ");
 			} else {
 				throw new RuntimeException();
@@ -79,22 +80,24 @@ public class QueryBuilder {
 		return output;
 	}
 
-	public static String generateQuery(String tablename, FilterDTO filterDTO) {
+	public static String generateQuery(String tablename, FilterDTO filterDTO, String searchAllQuery) {
 		String whereQuery = QueryBuilder.generateQueryFromFilterList(filterDTO.getFilters());
-		String order = (filterDTO.getOrder() == null) ? "ASC" : filterDTO.getOrder();
+		String order = (filterDTO.getOrder() == 0) ? "ASC" : "DESC";
 		String orderBy = (filterDTO.getOrderBy() == null) ? "ID" : filterDTO.getOrderBy();
-		int page = (filterDTO.getPage() == 0) ? 0 : filterDTO.getPage();
+		String search = (filterDTO.getSearch() == null) ? "" : searchAllQuery.replace("__PLACEHOLDER__", filterDTO.getSearch());
+  		int page = (filterDTO.getPage() == 0) ? 0 : filterDTO.getPage();
 		int perPage = (filterDTO.getPerPage() == 0) ? 10 : filterDTO.getPerPage();
-		String query = "SELECT * FROM " + tablename + whereQuery + " ORDER BY " + orderBy + " " + order + " LIMIT " + perPage + " OFFSET " + page * perPage;
+		String query = "SELECT * FROM " + tablename + whereQuery + search + " ORDER BY " + orderBy + " " + order + " LIMIT " + perPage + " OFFSET " + page * perPage;
 		System.out.println(query);
 		return query;
 	}
 
-	public static String genereateQueryWithoutOffset(String tablename, FilterDTO filterDTO) {
+	public static String genereateQueryWithoutOffset(String tablename, FilterDTO filterDTO, String searchAllQuery) {
 		String whereQuery = QueryBuilder.generateQueryFromFilterList(filterDTO.getFilters());
-		String order = (filterDTO.getOrder() == null) ? "ASC" : filterDTO.getOrder();
+		String order = (filterDTO.getOrder() == 0) ? "ASC" : "DESC";
 		String orderBy = (filterDTO.getOrderBy() == null) ? "ID" : filterDTO.getOrderBy();
-		String query = "SELECT * FROM " + tablename + whereQuery + " ORDER BY " + orderBy + " " + order;
+		String search = (filterDTO.getSearch() == null) ? "" : searchAllQuery.replace("__PLACEHOLDER__", filterDTO.getSearch());
+		String query = "SELECT * FROM " + tablename + whereQuery + search + " ORDER BY " + orderBy + " " + order;
 		System.out.println(query);
 		return query;
 	}
