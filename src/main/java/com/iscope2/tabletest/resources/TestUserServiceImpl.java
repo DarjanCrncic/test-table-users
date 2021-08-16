@@ -22,7 +22,7 @@ public class TestUserServiceImpl implements TestUserService{
 	
 	private TestUserRepository testUserRepository;
 	private JdbcTemplate jdbcTemplate;
-	public static String searchAllQuery = " AND (firstname LIKE '%__PLACEHOLDER__%' OR surname LIKE '%__PLACEHOLDER__%' OR email LIKE '%__PLACEHOLDER__%')";
+	public static String searchAllQuery = " (firstname LIKE '%__PLACEHOLDER__%' OR surname LIKE '%__PLACEHOLDER__%' OR email LIKE '%__PLACEHOLDER__%') ";
 
 	@Override
 	public TestUserDTO findWherePagination(String search, Pageable pageable) {
@@ -72,10 +72,10 @@ public class TestUserServiceImpl implements TestUserService{
 	@Override 
 	public TestUserDTO getAllWithFilters(FilterDTO filterDTO) {
 		int perPage = (filterDTO.getPerPage() == 0) ? 10 : filterDTO.getPerPage();
-		String query = QueryBuilder.generateQuery("test_user", filterDTO, searchAllQuery);	
+		String query = QueryBuilder.generateQuery("test_user", filterDTO, searchAllQuery, true);	
 		List<TestUser> usersList = jdbcTemplate.query(query, new BeanPropertyRowMapper<TestUser>(TestUser.class));
 		int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM (" 
-				+ QueryBuilder.genereateQueryWithoutOffset("test_user", filterDTO, searchAllQuery) + ")", Integer.class);
+				+ QueryBuilder.generateQuery("test_user", filterDTO, searchAllQuery, false) + ")", Integer.class);
 
 		TestUserDTO testUserDTO = new TestUserDTO();
 		testUserDTO.setTotal(count);

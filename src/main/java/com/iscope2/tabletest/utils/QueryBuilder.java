@@ -6,6 +6,7 @@ import com.iscope2.tabletest.models.FilterDTO;
 import com.iscope2.tabletest.models.FilterObject;
 import com.iscope2.tabletest.models.constants.LogicalOperand;
 import com.iscope2.tabletest.models.constants.Operations;
+import com.iscope2.tabletest.models.constants.Order;
 import com.iscope2.tabletest.models.constants.Types;
 
 import lombok.NoArgsConstructor;
@@ -20,6 +21,8 @@ public class QueryBuilder {
 
 		if (filters != null && filters.size() > 0) {
 			str.append(" WHERE ");
+		} else {
+			return "";
 		}
 
 		for (int i=0; i<filters.size(); i++) {
@@ -60,44 +63,47 @@ public class QueryBuilder {
 		return str.toString();
 	}
 
-	private static String likeAstrixPosition(String search, String operation) {
-		String output;
+//	private static String likeAstrixPosition(String search, String operation) {
+//		String output;
+//
+//		switch (operation) {
+//		case "starts":
+//			output = search.toLowerCase() + "%";
+//			break;
+//		case "ends":
+//			output = "%" + search.toLowerCase();
+//			break;
+//		case "equals":
+//			output = search.toLowerCase();
+//			break;
+//		default:
+//			output = "%" + search.toLowerCase() + "%";
+//			break;
+//		}
+//		return output;
+//	}
 
-		switch (operation) {
-		case "starts":
-			output = search.toLowerCase() + "%";
-			break;
-		case "ends":
-			output = "%" + search.toLowerCase();
-			break;
-		case "equals":
-			output = search.toLowerCase();
-			break;
-		default:
-			output = "%" + search.toLowerCase() + "%";
-			break;
-		}
-		return output;
-	}
-
-	public static String generateQuery(String tablename, FilterDTO filterDTO, String searchAllQuery) {
+	public static String generateQuery(String tablename, FilterDTO filterDTO, String searchAllQuery, boolean withOffset) {
 		String whereQuery = QueryBuilder.generateQueryFromFilterList(filterDTO.getFilters());
-		String order = (filterDTO.getOrder() == 0) ? "ASC" : "DESC";
+		String order = Order.getOrder(filterDTO.getOrder());
 		String orderBy = (filterDTO.getOrderBy() == null) ? "ID" : filterDTO.getOrderBy();
 		String search = (filterDTO.getSearch() == null) ? "" : searchAllQuery.replace("__PLACEHOLDER__", filterDTO.getSearch());
+		
+		if (whereQuery.isEmpty() || whereQuery.isBlank()) {
+			search = " WHERE " + search;
+		} else {
+			search = " AND " + search;
+		}
+		
   		int page = (filterDTO.getPage() == 0) ? 0 : filterDTO.getPage();
 		int perPage = (filterDTO.getPerPage() == 0) ? 10 : filterDTO.getPerPage();
-		String query = "SELECT * FROM " + tablename + whereQuery + search + " ORDER BY " + orderBy + " " + order + " LIMIT " + perPage + " OFFSET " + page * perPage;
-		System.out.println(query);
-		return query;
-	}
-
-	public static String genereateQueryWithoutOffset(String tablename, FilterDTO filterDTO, String searchAllQuery) {
-		String whereQuery = QueryBuilder.generateQueryFromFilterList(filterDTO.getFilters());
-		String order = (filterDTO.getOrder() == 0) ? "ASC" : "DESC";
-		String orderBy = (filterDTO.getOrderBy() == null) ? "ID" : filterDTO.getOrderBy();
-		String search = (filterDTO.getSearch() == null) ? "" : searchAllQuery.replace("__PLACEHOLDER__", filterDTO.getSearch());
-		String query = "SELECT * FROM " + tablename + whereQuery + search + " ORDER BY " + orderBy + " " + order;
+		
+		String query;
+		if (withOffset) {
+			query = "SELECT * FROM " + tablename + whereQuery + search + " ORDER BY " + orderBy + " " + order + " LIMIT " + perPage + " OFFSET " + page * perPage;
+		} else {
+			query = "SELECT * FROM " + tablename + whereQuery + search + " ORDER BY " + orderBy + " " + order;
+		}
 		System.out.println(query);
 		return query;
 	}
