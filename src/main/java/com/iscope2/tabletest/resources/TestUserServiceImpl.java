@@ -5,14 +5,11 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.iscope2.tabletest.models.FilterDTO;
+import com.iscope2.tabletest.models.ResultDTO;
 import com.iscope2.tabletest.models.TestUser;
-import com.iscope2.tabletest.models.TestUserDTO;
-import com.iscope2.tabletest.utils.QueryBuilder;
 
 import lombok.AllArgsConstructor;
 
@@ -21,17 +18,17 @@ import lombok.AllArgsConstructor;
 public class TestUserServiceImpl implements TestUserService{
 	
 	private TestUserRepository testUserRepository;
-	private JdbcTemplate jdbcTemplate;
 	public static String searchAllQuery = " (firstname LIKE '%__PLACEHOLDER__%' OR surname LIKE '%__PLACEHOLDER__%' OR email LIKE '%__PLACEHOLDER__%') ";
+	GenericHelperService<TestUser> genericHelperService;
 
 	@Override
-	public TestUserDTO findWherePagination(String search, Pageable pageable) {
+	public ResultDTO<TestUser> findWherePagination(String search, Pageable pageable) {
 		List<TestUser> userList = new ArrayList<TestUser>();
 		Page<TestUser> page = testUserRepository.findByFirstnameIgnoreCaseContainingOrSurnameIgnoreCaseContaining(search, search, pageable);
 		if (page.hasContent()) {
 			userList = page.getContent();
 		}
-		return new TestUserDTO(userList, Math.toIntExact(page.getTotalElements()), page.getTotalPages());
+		return new ResultDTO<TestUser>(userList, Math.toIntExact(page.getTotalElements()), page.getTotalPages());
 	}
 
 	@Override
@@ -55,13 +52,13 @@ public class TestUserServiceImpl implements TestUserService{
 	}
 
 	@Override
-	public TestUserDTO findAllPagination(Pageable pageable) {
+	public ResultDTO<TestUser> findAllPagination(Pageable pageable) {
 		List<TestUser> userList = new ArrayList<TestUser>();
 		Page<TestUser> page = testUserRepository.findAll(pageable);
 		if (page.hasContent()) {
 			userList = page.getContent();
 		}
-		return new TestUserDTO(userList, Math.toIntExact(page.getTotalElements()), page.getTotalPages());
+		return new ResultDTO<TestUser>(userList, Math.toIntExact(page.getTotalElements()), page.getTotalPages());
 	}
 
 	@Override
@@ -70,19 +67,8 @@ public class TestUserServiceImpl implements TestUserService{
 	}
 	
 	@Override 
-	public TestUserDTO getAllWithFilters(FilterDTO filterDTO) {
-		int perPage = (filterDTO.getPerPage() == 0) ? 10 : filterDTO.getPerPage();
-		String query = QueryBuilder.generateQuery("test_user", filterDTO, searchAllQuery, true);	
-		List<TestUser> usersList = jdbcTemplate.query(query, new BeanPropertyRowMapper<TestUser>(TestUser.class));
-		int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM (" 
-				+ QueryBuilder.generateQuery("test_user", filterDTO, searchAllQuery, false) + ")", Integer.class);
-
-		TestUserDTO testUserDTO = new TestUserDTO();
-		testUserDTO.setTotal(count);
-		testUserDTO.setPages(count/perPage);
-		testUserDTO.setData(usersList);
-		
-		return testUserDTO;
+	public ResultDTO<TestUser> getAllWithFilters(FilterDTO filterDTO) {
+		return genericHelperService.executeFilterQuery(filterDTO, TestUser.class, searchAllQuery, "test_user");
 	}
 
 }

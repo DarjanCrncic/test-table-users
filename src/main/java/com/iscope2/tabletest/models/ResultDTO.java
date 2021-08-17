@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestUserDTO {
+public class ResultDTO<T> {
 
-	private List<TestUser> data;
+	private List<T> data;
 	private int total;
 	private int pages;
 

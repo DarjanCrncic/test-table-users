@@ -9,18 +9,18 @@ import com.iscope2.tabletest.models.constants.Operations;
 import com.iscope2.tabletest.models.constants.Order;
 import com.iscope2.tabletest.models.constants.Types;
 
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@NoArgsConstructor
+@AllArgsConstructor
 public class QueryBuilder {
-
+	
 	public static String generateQueryFromFilterList(List<FilterObject> filters) {
-
+		
 		StringBuilder str = new StringBuilder();
 		int closingBracketCounter = 0;
 
 		if (filters != null && filters.size() > 0) {
-			str.append(" WHERE ");
+			str.append(" WHERE (");
 		} else {
 			return "";
 		}
@@ -59,7 +59,7 @@ public class QueryBuilder {
 				str.append(")");
 			}
 		}
-
+		str.append(")");
 		return str.toString();
 	}
 
@@ -107,4 +107,5 @@ public class QueryBuilder {
 		System.out.println(query);
 		return query;
 	}
+	
 }

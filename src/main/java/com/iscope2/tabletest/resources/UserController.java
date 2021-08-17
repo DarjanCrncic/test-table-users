@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iscope2.tabletest.models.FilterDTO;
+import com.iscope2.tabletest.models.ResultDTO;
 import com.iscope2.tabletest.models.TestUser;
-import com.iscope2.tabletest.models.TestUserDTO;
 
 import lombok.AllArgsConstructor;
 
@@ -33,10 +33,10 @@ public class UserController {
 	}
 
 	@GetMapping("/users")
-	public TestUserDTO getAllUsersPaginationSort(@RequestParam Optional<Integer> page, @RequestParam Optional<Integer> per_page, @RequestParam(defaultValue = "ASC") String order, @RequestParam(defaultValue = "id") String order_by, @RequestParam Optional<String> search) {
+	public ResultDTO<TestUser> getAllUsersPaginationSort(@RequestParam Optional<Integer> page, @RequestParam Optional<Integer> per_page, @RequestParam(defaultValue = "ASC") String order, @RequestParam(defaultValue = "id") String order_by, @RequestParam Optional<String> search) {
 
 		Pageable pageable = generatePageable(page, per_page, order, order_by);
-		TestUserDTO testUserDTO;
+		ResultDTO<TestUser> testUserDTO;
 
 		if (search.isPresent()) {
 			testUserDTO = testUserService.findWherePagination(search.get(), pageable);
@@ -48,12 +48,12 @@ public class UserController {
 	}
 
 	@PostMapping("/users/filter")
-	public TestUserDTO getAllUsersPaginationSortFilter(@RequestBody FilterDTO filterDTO) {
+	public ResultDTO<TestUser> getAllUsersPaginationSortFilter(@RequestBody FilterDTO filterDTO) {
 		return testUserService.getAllWithFilters(filterDTO);
 	}
 	
 	@PostMapping("/users/list")
-	public TestUserDTO getAllUsersPaginationSortFilterList(@RequestBody FilterDTO filterDTO) {
+	public ResultDTO<TestUser> getAllUsersPaginationSortFilterList(@RequestBody FilterDTO filterDTO) {
 		return testUserService.getAllWithFilters(filterDTO);
 	}
 
@@ -92,12 +92,6 @@ public class UserController {
 		} else {
 			pageable = Pageable.unpaged();
 		}
-		return pageable;
-	}
-
-	private Pageable generatePageableDefault(String page, String per_page, String order, String order_by) {
-		Direction direction = (order.equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
-		Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(per_page), Sort.by(direction, order_by));
 		return pageable;
 	}
 
