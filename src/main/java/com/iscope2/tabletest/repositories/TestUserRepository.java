@@ -1,4 +1,4 @@
-package com.iscope2.tabletest.resources;
+package com.iscope2.tabletest.repositories;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

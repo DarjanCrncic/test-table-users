@@ -1,4 +1,4 @@
-package com.iscope2.tabletest.resources;
+package com.iscope2.tabletest.controllers;
 
 import java.util.Optional;
 
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.iscope2.tabletest.models.FilterDTO;
 import com.iscope2.tabletest.models.ResultDTO;
 import com.iscope2.tabletest.models.TestUser;
+import com.iscope2.tabletest.services.TestUserService;
 
 import lombok.AllArgsConstructor;
 
@@ -47,13 +48,13 @@ public class UserController {
 		return testUserDTO;
 	}
 
-	@PostMapping("/users/filter")
-	public ResultDTO<TestUser> getAllUsersPaginationSortFilter(@RequestBody FilterDTO filterDTO) {
+	@PostMapping("/users/list")
+	public ResultDTO<TestUser> getAllUsersPaginationSortFilterList(@RequestBody FilterDTO filterDTO) {
 		return testUserService.getAllWithFilters(filterDTO);
 	}
 	
-	@PostMapping("/users/list")
-	public ResultDTO<TestUser> getAllUsersPaginationSortFilterList(@RequestBody FilterDTO filterDTO) {
+	@PostMapping("/users/secured/list")
+	public ResultDTO<TestUser> getAllUsersPaginationSortFilterListSecured(@RequestBody FilterDTO filterDTO) {
 		return testUserService.getAllWithFilters(filterDTO);
 	}
 

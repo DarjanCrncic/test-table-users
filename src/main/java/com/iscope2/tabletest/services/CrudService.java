@@ -1,4 +1,4 @@
-package com.iscope2.tabletest.resources;
+package com.iscope2.tabletest.services;
 
 import java.util.List;
 

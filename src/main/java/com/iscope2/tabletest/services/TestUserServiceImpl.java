@@ -1,4 +1,4 @@
-package com.iscope2.tabletest.resources;
+package com.iscope2.tabletest.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.iscope2.tabletest.models.FilterDTO;
 import com.iscope2.tabletest.models.ResultDTO;
 import com.iscope2.tabletest.models.TestUser;
+import com.iscope2.tabletest.repositories.TestUserRepository;
 
 import lombok.AllArgsConstructor;
 

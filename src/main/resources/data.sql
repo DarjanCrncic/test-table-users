@@ -1,3 +1,7 @@
+INSERT INTO auth_user (id, username, password) VALUES (1, 'darjan', '$2a$10$pja0xpGp/OW9yOdiO1Vx9us0LIhBNwgT4ce0EX7otHFrFgAjcA/oi');
+INSERT INTO auth_user (id, username, password) VALUES (2, 'bono', '$2a$10$pja0xpGp/OW9yOdiO1Vx9us0LIhBNwgT4ce0EX7otHFrFgAjcA/oi');
+INSERT INTO auth_user (id, username, password) VALUES (3, 'ivan', '$2a$10$pja0xpGp/OW9yOdiO1Vx9us0LIhBNwgT4ce0EX7otHFrFgAjcA/oi');
+
 INSERT INTO test_user (id,firstname,surname,email,phone,birthdate) VALUES (1,'Ross','Powers','sollicitudin@quisdiam.net','02 38 58 51 23',to_date('24.11.20', 'dd.mm.rr UTC'));
 INSERT INTO test_user (id,firstname,surname,email,phone,birthdate) VALUES (2,'Eaton','Mullins','amet@Curabiturconsequatlectus.edu','05 60 85 17 72',to_date('31.03.22', 'dd.mm.rr'));
 INSERT INTO test_user (id,firstname,surname,email,phone,birthdate) VALUES (3,'Ciaran','Maxwell','sit@Nullasempertellus.com','03 09 53 35 53',to_date('26.12.21', 'dd.mm.rr'));
@@ -199,3 +203,4 @@ INSERT INTO test_user (id,firstname,surname,email,phone,birthdate) VALUES (197,'
 INSERT INTO test_user (id,firstname,surname,email,phone,birthdate) VALUES (198,'Cullen','Wise','nibh.Phasellus.nulla@euismodenimEtiam.com','06 32 69 45 64',to_date('25.10.20', 'dd.mm.rr'));
 INSERT INTO test_user (id,firstname,surname,email,phone,birthdate) VALUES (199,'Rudyard','Hopper','et.magnis.dis@utpharetra.ca','04 55 19 04 16',to_date('19.08.20', 'dd.mm.rr'));
 INSERT INTO test_user (id,firstname,surname,email,phone,birthdate) VALUES (200,'Jonas','Garner','ac.arcu.Nunc@risusDuis.co.uk','09 91 91 53 84',to_date('14.07.21', 'dd.mm.rr'));
+
